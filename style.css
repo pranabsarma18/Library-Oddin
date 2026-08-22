@@ -1,0 +1,25 @@
+.book-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 50px;
+    justify-content: center;
+}
+
+.book-container > .book {
+    border: 1px solid blue;
+    text-align: center;
+
+}
+
+.book > input[type="checkbox"] {
+    display: inline;
+}
+
+.book > .is-read {
+    display: inline;
+}
+
+.book > button {
+    display: block;
+    margin: 0 auto;
+}
