@@ -1,124 +1,165 @@
-const myLibrary = [];
-
-function Book(bookTitle, authorName, pagesCount, isRead) {
-    this.bookID = crypto.randomUUID();
-    this.title = bookTitle;
-    this.author = authorName;
-    this.pages = pagesCount;
-    this.read = isRead;
-
-}
-
-Book.prototype.toogleRead = function () {
-    if (this.read === true) {
-        this.read = false
+class Book {
+    constructor(bookTitle, authorName, pagesCount, isRead) {
+            this.bookID = crypto.randomUUID();
+            this.title = bookTitle;
+            this.author = authorName;
+            this.pages = pagesCount;
+            this.read = isRead;
     }
-    else {
+    
+    toogleRead() {
+        if (this.read === true) {
+            this.read = false
+        }
+        else {
         this.read = true
+        }
     }
 }
 
-function addBookToLibrary(bookTitle, authorName, pagesCount, isRead) {
-  // take params, create a book then store it in the array
-  book = new Book(bookTitle, authorName, pagesCount, isRead);
-  myLibrary.push(book)
+class Library {
+    #index;
+    #myLibrary;
+
+    constructor() {
+        this.#myLibrary = [
+            new Book("The Great Gatsby", "F. Scott Fitzgerald", "180", true),
+            new Book("To Kill a Mockingbird", "Harper Lee", "281", true),
+            new Book("1984", "George Orwell", "328", false),
+            new Book("The Hobbit", "J.R.R. Tolkien", "310", true),
+            new Book("Pride and Prejudice", "Jane Austen", "279", false),
+            new Book("The Alchemist", "Paulo Coelho", "208", true),
+            new Book("The Catcher in the Rye", "J.D. Salinger", "234", false),
+            new Book("Atomic Habits", "James Clear", "320", true),
+            new Book("The Kite Runner", "Khaled Hosseini", "371", true),
+        ];
+    }
+
+    get books() {
+        return this.#myLibrary;
+    }
+
+    addBook(book) {
+        this.#myLibrary.push(book)
+    }
+
+    deleteBook(id) {
+        this.#index = this.#myLibrary.findIndex(book => book.bookID === id);
+        console.log(this.#index)
+        if (this.#index !== -1) {
+            this.#myLibrary.splice(this.#index, 1);
+        }
+    }
 }
 
-addBookToLibrary("The Great Gatsby", "F. Scott Fitzgerald", "180", true);
-addBookToLibrary("To Kill a Mockingbird", "Harper Lee", "281", true);
-addBookToLibrary("1984", "George Orwell", "328", false);
-addBookToLibrary("The Hobbit", "J.R.R. Tolkien", "310", true);
-addBookToLibrary("Pride and Prejudice", "Jane Austen", "279", false);
-addBookToLibrary("The Alchemist", "Paulo Coelho", "208", true);
-addBookToLibrary("The Catcher in the Rye", "J.D. Salinger", "234", false);
-addBookToLibrary("Atomic Habits", "James Clear", "320", true);
-addBookToLibrary("The Kite Runner", "Khaled Hosseini", "371", true);
 
-const container = document.querySelector(".book-container");
-function display() {
-    container.textContent = ""
-    myLibrary.forEach(function(obj) {
-        const article = document.createElement("div");
-        article.classList.add("book");
+class DisplayController {
+    #container;
+    #library;
+    #books;
+    #book_obj;
+    #addFormButton;
+    #book;
+    #author;
+    #pages;
+    #read;
+    #bookDels;
+    #DeletebookID;
 
-        const bookTitle = document.createElement("div");
-        bookTitle.classList.add("book-name");
-        bookTitle.textContent = "Book Title: ";
-        span = document.createElement("span")
-        span.classList.add("bold")
-        span.textContent = `${obj.title}`
-        bookTitle.appendChild(span)
+    constructor() {
+        this.#library = new Library();
+        this.#books = this.#library.books;
+        this.#addFormButton = document.querySelector("#book-form > button")
+        this.#container = document.querySelector(".book-container");
+        console.log(this.#bookDels)
+    }
 
-        const authorName = document.createElement("div");
-        authorName.classList.add("author");
-        authorName.textContent = `Author Name: ${obj.author}`
+    renderPage() {
+        this.#container.textContent = ""
+        console.log(this.#books)
+        this.#books.forEach((obj) => {
+            const article = document.createElement("div");
+            article.classList.add("book");
 
-        const pagesCount = document.createElement("div");
-        pagesCount.classList.add("page-count");
-        pagesCount.textContent = `Total Number of pages: ${obj.pages}`
+            const bookTitle = document.createElement("div");
+            bookTitle.classList.add("book-name");
+            bookTitle.textContent = "Book Title: ";
+            const span = document.createElement("span")
+            span.classList.add("bold")
+            span.textContent = `${obj.title}`
+            bookTitle.appendChild(span)
 
-        const isRead = document.createElement("div");
-        isRead.classList.add("is-read");
-        const readCheck = document.createElement("input")
-        readCheck.setAttribute("type", "checkbox")
-        readCheck.setAttribute("data-id", obj.bookID)
-        if (obj.read === true) {
-            readCheck.checked = true
-        }
-        isRead.textContent = `Done Reading?: ${obj.read}`
+            const authorName = document.createElement("div");
+            authorName.classList.add("author");
+            authorName.textContent = `Author Name: ${obj.author}`
 
-        const deleteBtn = document.createElement("button")
-        deleteBtn.setAttribute("type", "submit")
-        deleteBtn.setAttribute("data-id", obj.bookID)
-        deleteBtn.textContent = "Delete Book"
+            const pagesCount = document.createElement("div");
+            pagesCount.classList.add("page-count");
+            pagesCount.textContent = `Total Number of pages: ${obj.pages}`
 
-        article.append(bookTitle, authorName, pagesCount, readCheck, isRead, deleteBtn)
-        container.appendChild(article)
+            const isRead = document.createElement("div");
+            isRead.classList.add("is-read");
+            const readCheck = document.createElement("input")
+            readCheck.setAttribute("type", "checkbox")
+            readCheck.setAttribute("data-id", obj.bookID)
+            if (obj.read === true) {
+                readCheck.checked = true
+            }
+            isRead.textContent = `Done Reading?: ${obj.read}`
 
-        readCheck.addEventListener("click", (e) => {
-        console.log("inside toggle")
-        obj.toogleRead()
-        display()
-        }
-    )
+            const deleteBtn = document.createElement("button")
+            deleteBtn.setAttribute("type", "submit")
+            deleteBtn.setAttribute("data-id", obj.bookID)
+            deleteBtn.textContent = "Delete Book"
+
+            article.append(bookTitle, authorName, pagesCount, readCheck, isRead, deleteBtn)
+            this.#container.appendChild(article)
+
+            readCheck.addEventListener("click", (e) => {
+            console.log("inside toggle")
+            obj.toogleRead()
+            this.renderPage()
+            }
+        )
     } )
-    
-    const bookDels = document.querySelectorAll(".book button");
-    bookDels.forEach(function(delBtn) {
-    delBtn.addEventListener("click", (e) => {
-        var bookID = e.target.getAttribute("data-id");
-        console.log(bookID)
-        deleteBook(bookID)
-    })
-}
-)
-}
-
-display()
-
-const addFormButton = document.querySelector("#book-form > button")
-addFormButton.addEventListener("click", function (event) {
-    event.preventDefault();
-    const book = document.querySelector("input#title").value;
-    const author = document.querySelector("input#author").value;
-    const pages = document.querySelector("input#pages").value;
-    const read = document.querySelector("input#read").checked ? true : false;
-
-    book_obj = new Book(book, author, pages, read);
-    myLibrary.push(book_obj)
-    display()
-    
-    console.log("Book is added")
-})
-
-function deleteBook(id) {
-    const index = myLibrary.findIndex(book => book.bookID === id);
-    
-    if (index !== -1) {
-        myLibrary.splice(index, 1);
     }
-    display()
+
+    addBookEventListener() {
+        this.#addFormButton.addEventListener("click", (event) => {
+            event.preventDefault();
+            this.#book = document.querySelector("input#title").value;
+            this.#author = document.querySelector("input#author").value;
+            this.#pages = document.querySelector("input#pages").value;
+            this.#read = document.querySelector("input#read").checked ? true : false;
+
+            this.#book_obj = new Book(this.#book, this.#author, this.#pages, this.#read);
+            this.#library.addBook(this.#book_obj)
+            this.renderPage()
+            // this.deletBookEventListener()
+            console.log("Book is added")
+        })
+    }
+
+    deletBookEventListener() {
+            this.#container.addEventListener("click", (e) => {
+            e.preventDefault();
+            console.log(e.target);
+            this.#DeletebookID = e.target.getAttribute("data-id");
+            console.log(e.target.getAttribute)
+            if (e.target.getAttribute("type") === "submit") {
+            this.#library.deleteBook(this.#DeletebookID);
+            this.renderPage();
+            console.log("Book is deleted")
+            }
+        })
 }
+}
+
+
+controller = new DisplayController();
+controller.renderPage();
+controller.addBookEventListener();
+controller.deletBookEventListener();
 
 
 
