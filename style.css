@@ -1,3 +1,6 @@
+body {
+    margin: 30px;
+}
 .book-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -6,8 +9,10 @@
 }
 
 .book-container > .book {
-    border: 1px solid blue;
     text-align: center;
+    line-height: 2em;
+    border-radius: 10px;
+    background-color: antiquewhite;
 
 }
 
@@ -21,5 +26,13 @@
 
 .book > button {
     display: block;
-    margin: 0 auto;
+    margin: 10px auto;
 }
+
+
+.add-book button{
+    display: block;
+    margin: 50px auto;
+    padding: 10px 20px;
+}
+
