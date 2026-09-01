@@ -160,7 +160,3 @@ controller = new DisplayController();
 controller.renderPage();
 controller.addBookEventListener();
 controller.deletBookEventListener();
-
-
-
-
