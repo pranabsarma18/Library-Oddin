@@ -59,6 +59,7 @@ class DisplayController {
     #books;
     #book_obj;
     #addFormButton;
+    #addForm;
     #book;
     #author;
     #pages;
@@ -71,6 +72,8 @@ class DisplayController {
         this.#books = this.#library.books;
         this.#addFormButton = document.querySelector("#book-form > button")
         this.#container = document.querySelector(".book-container");
+        this.#addForm = document.querySelector("form");
+
         console.log(this.#bookDels)
     }
 
@@ -125,19 +128,26 @@ class DisplayController {
     }
 
     addBookEventListener() {
-        this.#addFormButton.addEventListener("click", (event) => {
+        this.#addForm.addEventListener("submit", (event) => {
             event.preventDefault();
-            this.#book = document.querySelector("input#title").value;
-            this.#author = document.querySelector("input#author").value;
-            this.#pages = document.querySelector("input#pages").value;
-            this.#read = document.querySelector("input#read").checked ? true : false;
 
-            this.#book_obj = new Book(this.#book, this.#author, this.#pages, this.#read);
-            this.#library.addBook(this.#book_obj)
-            this.renderPage()
-            // this.deletBookEventListener()
-            console.log("Book is added")
-        })
+            this.#book = document.querySelector("#title").value;
+            this.#author = document.querySelector("#author").value;
+            this.#pages = document.querySelector("#pages").value;
+            this.#read = document.querySelector("#read").checked;
+
+            this.#book_obj = new Book(
+                this.#book,
+                this.#author,
+                this.#pages,
+                this.#read
+            );
+
+            this.#library.addBook(this.#book_obj);
+            this.renderPage();
+
+            this.#addForm.reset();
+        });
     }
 
     deletBookEventListener() {
@@ -155,8 +165,32 @@ class DisplayController {
 }
 }
 
+const form = document.querySelector("form");
+const title = document.getElementById("title");
+const author = document.getElementById("author")
+
 
 controller = new DisplayController();
 controller.renderPage();
 controller.addBookEventListener();
 controller.deletBookEventListener();
+
+
+
+console.log(form)
+
+title.addEventListener("invalid", () => {
+    title.setCustomValidity("You need to enter the title of the Book");
+});
+
+author.addEventListener("invalid", () => {
+    author.setCustomValidity("The author name must be filled!");
+});
+
+title.addEventListener("input", () => {
+    title.setCustomValidity("");
+});
+
+author.addEventListener("input", () => {
+    author.setCustomValidity("");
+});

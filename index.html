@@ -12,14 +12,16 @@
     <div class="book-container">
     </div>
     <div class="add-book">
-        <button command="show-modal" commandfor="my-dialog">Add more Books</button>
+        <button command="show-modal" commandfor="my-dialog" id="add-book">Add more Books</button>
         <dialog id="my-dialog">
             <form id="book-form">
                 <label for="title">Book Title:</label>
-                <input type="text" id="title" name="title">
+                <input type="text" id="title" name="title" required>
+                <span class="error"></span>
 
                 <label for="author">Author:</label>
-                <input type="text" id="author" name="author">
+                <input type="text" id="author" name="author" required>
+                <span class="error"></span>
 
                 <label for="pages">Number of Pages:</label>
                 <input type="number" id="pages" name="pages">
